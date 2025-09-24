@@ -11,6 +11,7 @@ A simple, scalable, and containerized resource reservation application built wit
 The application is composed of two primary microservices, a database, and a client, all orchestrated by Kubernetes. The **Auth Service** acts as a public-facing API Gateway, while the **Reservation Service** handles the core business logic internally.
 
 !(https://raw.githubusercontent.com/nsnkk2003/reserveit/main/architectural_diagram.png)
+![Project Overview Document: Bookstore App](architectural_diagram.png)
 
 ***
 
