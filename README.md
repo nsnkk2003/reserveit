@@ -95,8 +95,5 @@ The application exposes the following REST API endpoints through the `auth-servi
 
 ***
 
-## 📄 License
-
-This project is licensed under the MIT License. See the **LICENSE** file for details.
 
 
