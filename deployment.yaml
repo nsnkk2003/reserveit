@@ -1,4 +1,20 @@
 # ----------------------------
+# Persistent Volume Claim for MongoDB
+# This requests storage from Kubernetes.
+# ----------------------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce # This volume can be mounted by a single node
+  resources:
+    requests:
+      storage: 1Gi # Request 1 Gibibyte of storage
+
+---
+# ----------------------------
 # MongoDB
 # ----------------------------
 apiVersion: v1
@@ -29,10 +45,23 @@ spec:
     spec:
       containers:
       - name: mongo
-        image: mongo:latest
+        image: mongo:6.0 # Keep the specific version
         ports:
         - containerPort: 27017
-
+        # --- Add this startup probe ---
+        startupProbe:
+          tcpSocket:
+            port: 27017
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        # -------------------------------
+        volumeMounts:
+        - name: mongo-persistent-storage
+          mountPath: /data/db
+      volumes:
+      - name: mongo-persistent-storage
+        persistentVolumeClaim:
+          claimName: mongo-pvc
 # ----------------------------
 # Reservation Service (Private)
 # ----------------------------

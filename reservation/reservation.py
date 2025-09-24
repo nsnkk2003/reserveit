@@ -13,10 +13,9 @@ CORS(app)
 try:
     client = MongoClient('mongo-db-service', 27017, serverSelectionTimeoutMS=5000)
     client.server_info()
-    logger = logging.getLogger(__name__)
     logger.info("Connected to MongoDB successfully")
 except Exception as e:
-    logger.error(f"Failed to connect to MongoDB: {e}")
+    logger.error(f"Failed to connect to MongoDB: {e}") # Now this will work
     raise
 
 db = client['reserveit']
