@@ -1,87 +1,102 @@
-ReserveIt: A Microservice-Based Reservation System
+# ReserveIt: A Microservice-Based Reservation System
+
+![GitHub issues](https://img.shields.io/github/issues/nsnkk2003/reserveit) ![GitHub forks](https://img.shields.io/github/forks/nsnkk2003/reserveit) ![GitHub stars](https://img.shields.io/github/stars/nsnkk2003/reserveit)
+
 A simple, scalable, and containerized resource reservation application built with a microservice architecture. This project is designed to be deployed on Kubernetes and demonstrates key cloud-native principles.
 
-🏛️ System Architecture
-The application is composed of two primary microservices, a database, and a client, all orchestrated by Kubernetes. The Auth Service acts as a public-facing API Gateway, while the Reservation Service handles the core business logic internally.
+***
+
+## 🏛️ System Architecture
+
+The application is composed of two primary microservices, a database, and a client, all orchestrated by Kubernetes. The **Auth Service** acts as a public-facing API Gateway, while the **Reservation Service** handles the core business logic internally.
 
 !(https://raw.githubusercontent.com/nsnkk2003/reserveit/main/architectural_diagram.png)
 
-✨ Features
-User Authentication: Secure user registration and login.
+***
 
-Resource Browsing: View a list of available resources (e.g., meeting rooms, tables).
+## ✨ Features
 
-Slot Booking: Check availability and book time slots for a specific date.
+- **User Authentication**: Secure user registration and login.
+- **Resource Browsing**: View a list of available resources (e.g., meeting rooms, tables).
+- **Slot Booking**: Check availability and book time slots for a specific date.
+- **Booking Management**: View and cancel your personal reservations.
+- **Scalable by Design**: Independently scalable microservices.
+- **Persistent Storage**: Ensures user and booking data survives pod restarts.
 
-Booking Management: View and cancel your personal reservations.
+***
 
-Scalable by Design: Independently scalable microservices.
+## 💻 Tech Stack
 
-Persistent Storage: Ensures user and booking data survives pod restarts.
-
-💻 Tech Stack
 The project is built with a modern, container-native stack:
 
-Backend: Python, Flask
+- **Backend**: Python, Flask
+- **Database**: MongoDB
+- **Containerization**: Docker
+- **Orchestration**: Kubernetes
 
-Database: MongoDB
+***
 
-Containerization: Docker
+## 🚀 Getting Started
 
-Orchestration: Kubernetes
-
-🚀 Getting Started
 Follow these instructions to get the project deployed and running on a Kubernetes cluster.
 
-Prerequisites
-A running Kubernetes cluster (e.g., Minikube, Docker Desktop).
+### Prerequisites
 
-kubectl command-line tool configured to connect to your cluster.
+- A running Kubernetes cluster (e.g., [Minikube](https://minikube.sigs.k8s.io/docs/start/), Docker Desktop).
+- `kubectl` command-line tool configured to connect to your cluster.
+- Docker Hub account to host your container images.
 
-Docker Hub account to host your container images.
+### Deployment Steps
 
-Deployment Steps
-Clone the Repository
+1.  **Clone the Repository**
+    ```bash
+    git clone [https://github.com/nsnkk2003/reserveit.git](https://github.com/nsnkk2003/reserveit.git)
+    cd reserveit
+    ```
 
-Bash
+2.  **Build and Push Docker Images**
+    You must build the images for both the `auth` and `reservation` services and push them to your Docker Hub repository. Make sure the image names in `deployment.yaml` match your Docker Hub paths (`nsnkk2003/auth-service:latest` and `nsnkk2003/reservation-service:latest`).
 
-git clone https://github.com/nsnkk2003/reserveit.git
-cd reserveit
-Build and Push Docker Images
-You must build the images for both the auth and reservation services and push them to your Docker Hub repository. Make sure the image names in deployment.yaml match your Docker Hub paths (nsnkk2003/auth-service:latest and nsnkk2003/reservation-service:latest).
+3.  **Deploy to Kubernetes**
+    Apply the Kubernetes manifest file to create all the necessary deployments, services, and the persistent volume claim.
+    ```bash
+    kubectl apply -f deployment.yaml
+    ```
 
-Deploy to Kubernetes
-Apply the Kubernetes manifest file to create all the necessary deployments, services, and the persistent volume claim.
+4.  **Check the Deployment Status**
+    Wait for all pods to be in the `Running` state.
+    ```bash
+    kubectl get pods
+    ```
+    You should see pods for `auth-deployment`, `reservation-deployment`, and `mongo-deployment`.
 
-Bash
+5.  **Access the Application**
+    The `auth-service` is exposed via a `NodePort`. Use this command to find the URL and open it in your browser (works best with Minikube).
+    ```bash
+    minikube service auth-service
+    ```
+    For other clusters, find the `NodePort` by running `kubectl get service auth-service` and access the application at `http://<node-ip>:<node-port>`.
 
-kubectl apply -f deployment.yaml
-Check the Deployment Status
-Wait for all pods to be in the Running state.
+***
 
-Bash
+## 🔌 Endpoints
 
-kubectl get pods
-You should see pods for auth-deployment, reservation-deployment, and mongo-deployment.
+The application exposes the following REST API endpoints through the `auth-service` gateway:
 
-Access the Application
-The auth-service is exposed via a NodePort. Use this command to find the URL and open it in your browser (works best with Minikube).
+| Method | Endpoint                    | Description                           |
+| :----- | :-------------------------- | :------------------------------------ |
+| `POST` | `/api/auth/register`        | Register a new user.                  |
+| `POST` | `/api/auth/login`           | Log in an existing user.              |
+| `GET`  | `/api/resources`            | Get a list of all available resources.|
+| `GET`  | `/api/slots/<res_id>/<date>`| Get available slots for a resource.   |
+| `POST` | `/api/book`                 | Book a new reservation.               |
+| `GET`  | `/api/bookings/<user_id>`   | Get all bookings for a user.          |
+| `POST` | `/api/cancel/<booking_id>`  | Cancel an existing booking.           |
 
-Bash
+***
 
-minikube service auth-service
-For other clusters, find the NodePort by running kubectl get service auth-service and access the application at http://<node-ip>:<node-port>.
+## 📄 License
 
-Endpoints
-The application exposes the following REST API endpoints through the auth-service gateway:
-
-Method	Endpoint	Description
-POST	/api/auth/register	Register a new user.
-POST	/api/auth/login	Log in an existing user.
-GET	/api/resources	Get a list of all available resources.
-GET	/api/slots/<res_id>/<date>	Get available slots for a resource.
-POST	/api/book	Book a new reservation.
-GET	/api/bookings/<user_id>	Get all bookings for a user.
-POST	/api/cancel/<booking_id>	Cancel an existing booking.
+This project is licensed under the MIT License. See the **LICENSE** file for details.
 
 
